@@ -10,7 +10,7 @@ public class HashidsUtils {
         private Hashids instance;
 
         HashidsEnum() {
-            instance = new Hashids("td-object-service");
+            instance = new Hashids("");
         }
 
         public Hashids getInstance() {
