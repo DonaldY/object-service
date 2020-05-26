@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.donaldy.dao.ObjectFileMapper">
+  <resultMap id="BaseResultMap" type="com.donaldy.model.ObjectFile">
+    <constructor>
+      <idArg column="file_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="user_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="client_id" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="file_name" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="path" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="access_type" javaType="java.lang.Byte" jdbcType="TINYINT" />
+      <arg column="created_at" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="updated_at" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List">
+    file_id, user_id, client_id, file_name, path, access_type, created_at, updated_at
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from object_file
+    where file_id = #{fileId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from object_file
+    where file_id = #{fileId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.donaldy.model.ObjectFile">
+    insert into object_file (file_id, user_id, client_id, 
+      file_name, path, access_type, 
+      created_at, updated_at)
+    values (#{fileId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{clientId,jdbcType=VARCHAR}, 
+      #{fileName,jdbcType=VARCHAR}, #{path,jdbcType=VARCHAR}, #{accessType,jdbcType=TINYINT}, 
+      #{createdAt,jdbcType=TIMESTAMP}, #{updatedAt,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.donaldy.model.ObjectFile">
+    insert into object_file
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="fileId != null">
+        file_id,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="clientId != null">
+        client_id,
+      </if>
+      <if test="fileName != null">
+        file_name,
+      </if>
+      <if test="path != null">
+        path,
+      </if>
+      <if test="accessType != null">
+        access_type,
+      </if>
+      <if test="createdAt != null">
+        created_at,
+      </if>
+      <if test="updatedAt != null">
+        updated_at,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="fileId != null">
+        #{fileId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="clientId != null">
+        #{clientId,jdbcType=VARCHAR},
+      </if>
+      <if test="fileName != null">
+        #{fileName,jdbcType=VARCHAR},
+      </if>
+      <if test="path != null">
+        #{path,jdbcType=VARCHAR},
+      </if>
+      <if test="accessType != null">
+        #{accessType,jdbcType=TINYINT},
+      </if>
+      <if test="createdAt != null">
+        #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedAt != null">
+        #{updatedAt,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.donaldy.model.ObjectFile">
+    update object_file
+    <set>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="clientId != null">
+        client_id = #{clientId,jdbcType=VARCHAR},
+      </if>
+      <if test="fileName != null">
+        file_name = #{fileName,jdbcType=VARCHAR},
+      </if>
+      <if test="path != null">
+        path = #{path,jdbcType=VARCHAR},
+      </if>
+      <if test="accessType != null">
+        access_type = #{accessType,jdbcType=TINYINT},
+      </if>
+      <if test="createdAt != null">
+        created_at = #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedAt != null">
+        updated_at = #{updatedAt,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where file_id = #{fileId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.donaldy.model.ObjectFile">
+    update object_file
+    set user_id = #{userId,jdbcType=INTEGER},
+      client_id = #{clientId,jdbcType=VARCHAR},
+      file_name = #{fileName,jdbcType=VARCHAR},
+      path = #{path,jdbcType=VARCHAR},
+      access_type = #{accessType,jdbcType=TINYINT},
+      created_at = #{createdAt,jdbcType=TIMESTAMP},
+      updated_at = #{updatedAt,jdbcType=TIMESTAMP}
+    where file_id = #{fileId,jdbcType=INTEGER}
+  </update>
+
+  <insert id="insertFile">
+    INSERT INTO object_file (user_id, client_id, file_name, path, type)
+    VALUES (#{userId}, #{clientId}, #{fileName}, #{path}, #{type})
+  </insert>
+
+  <select id="selectPrivateFile" resultType="com.donaldy.model.ObjectFile">
+    SELECT
+    path
+    FROM object_file
+    WHERE file_id = #{fileId}
+    AND user_id = #{userId}
+    AND client_id = #{clientId}
+    AND type = #{type}
+  </select>
+
+  <insert id="insertFoldsBatch" keyProperty="fileId" parameterType="java.util.List" useGeneratedKeys="true">
+    INSERT INTO object_file
+    (user_id, client_id, file_name, `type`, namespace_id)
+    VALUES
+    <foreach collection="list" index="index" item="item" separator=",">
+      (#{item.userId}, #{item.clientId}, #{item.fileName}, #{item.type}, #{item.namespaceId})
+    </foreach>
+  </insert>
+
+  <update id="updateFoldsDirIdBatch" parameterType="java.util.List">
+    UPDATE object_file
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="dir_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.fileId != null">
+            WHEN file_id = #{item.fileId} THEN #{item.dirId}
+          </if>
+        </foreach>
+      </trim>
+    </trim>
+    where file_id in
+    <foreach close=")" collection="list" index="index" item="item" open="(" separator=",">
+      #{item.fileId}
+    </foreach>
+  </update>
+</mapper>
