@@ -1,5 +1,6 @@
 package com.donaldy.utils;
 
+import com.donaldy.common.Const;
 import org.hashids.Hashids;
 
 public class HashidsUtils {
@@ -10,7 +11,7 @@ public class HashidsUtils {
         private Hashids instance;
 
         HashidsEnum() {
-            instance = new Hashids("");
+            instance = new Hashids("td-object-service");
         }
 
         public Hashids getInstance() {
@@ -30,6 +31,9 @@ public class HashidsUtils {
      * @return       加密字符串
      */
     public static String encode(Integer fileId) {
+
+        Assert.isFalse(NumberUtils.isEmpty(fileId), Const.HttpStatusCode.BAD_REQUEST.getCode(),
+                "文件参数错误");
 
         return getInstance().encode(fileId);
     }
@@ -53,7 +57,7 @@ public class HashidsUtils {
      * @param args
      */
     public static void main(String[] args) {
-        Hashids hashids = new Hashids("");
+        Hashids hashids = new Hashids("td-object-service");
 
         String hash = hashids.encode(1234555L);
 
@@ -71,4 +75,3 @@ public class HashidsUtils {
 
 
 }
-

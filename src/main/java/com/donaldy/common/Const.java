@@ -32,4 +32,20 @@ public class Const {
         }
     }
 
+    @Getter
+    public enum FileType {
+        PRIVATE(0, "私有文件"),
+        PUBLIC(1, "公有文件"),
+        FOLD(10, "文件夹");
+
+        private int code;
+        private String value;
+
+        FileType(int code, String value) {
+            this.code = code;
+            this.value = value;
+        }
+
+    }
+
 }

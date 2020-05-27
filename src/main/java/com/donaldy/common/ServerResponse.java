@@ -7,6 +7,7 @@ import java.io.Serializable;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ServerResponse<T> implements Serializable {
     private int code;
+    private String message;
     private String msg;
     private T data;
 
@@ -21,12 +22,14 @@ public class ServerResponse<T> implements Serializable {
 
     private ServerResponse(int code, T data, String msg) {
         this.code = code;
-        this.msg = msg;
+        this.message = msg;
         this.data = data;
+        this.msg = msg;
     }
 
     private ServerResponse(int code, String msg) {
         this.code = code;
+        this.message = msg;
         this.msg = msg;
     }
 
@@ -45,6 +48,8 @@ public class ServerResponse<T> implements Serializable {
     public String getMsg() {
         return this.msg;
     }
+
+    public String getMessage() {return this.message;}
 
     public static <T> ServerResponse<T> createBySuccess(){
         return new ServerResponse<>(ResponseCode.SUCCESS.getCode());
@@ -72,7 +77,7 @@ public class ServerResponse<T> implements Serializable {
         return new ServerResponse<>(ResponseCode.ERROR.getCode(), errorMessage);
     }
 
-    public static <T> ServerResponse<T> createByErrorCodeMessage(int errorCode,String errorMessage){
+    public static <T> ServerResponse<T> createByErrorCodeMessage(int errorCode, String errorMessage){
         return new ServerResponse<>(errorCode, errorMessage);
     }
 }

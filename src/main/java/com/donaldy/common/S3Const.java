@@ -1,57 +1,74 @@
 package com.donaldy.common;
 
-import com.aliyun.oss.OSSClient;
+import com.amazonaws.auth.AWSCredentials;
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.client.builder.AwsClientBuilder;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
-@ConditionalOnProperty(name = "storage.type", havingValue = "oss")
+@ConditionalOnProperty(name = "storage.type", havingValue = "ceph")
 @Component
-public class OSSConst {
+public class S3Const {
 
-    public  static String ENDPOINT;
+    public static String ENDPOINT;
+    private static String INTERNAL_ENDPOINT;
+
     private static String ACCESS_KEY_ID;
     private static String ACCESS_KEY_SECRET;
 
     private static String PRIVATE_BUCKET_NAME;
     private static String PUBLIC_BUCKET_NAME;
 
-    @Value("${aliyun.oss.endpoint}")
+    @Value("${ceph.endpoint}")
     public void setEndPoint(String endPoint) {
         ENDPOINT = endPoint;
     }
 
-    @Value("${aliyun.oss.accessKeyId}")
+    @Value("${ceph.internal.endpoint}")
+    public void setInternalEndpoint(String endpoint) { INTERNAL_ENDPOINT = endpoint; }
+
+    @Value("${ceph.accessKeyId}")
     public void setAccessKeyId(String accessKeyId) {
         ACCESS_KEY_ID = accessKeyId;
     }
 
-    @Value("${aliyun.oss.accessKeySecret}")
+    @Value("${ceph.accessKeySecret}")
     public void setAccessKeySecret(String accessKeySecret) {
         ACCESS_KEY_SECRET = accessKeySecret;
     }
 
-    @Value("${aliyun.oss.private.bucketName}")
+    @Value("${ceph.private.bucketName}")
     public void setPrivateBucketName(String privateBucketName) {
         PRIVATE_BUCKET_NAME = privateBucketName;
     }
 
-    @Value("${aliyun.oss.public.bucketName}")
+    @Value("${ceph.public.bucketName}")
     public void setPublicBucketName(String publicBucketName) {
         PUBLIC_BUCKET_NAME = publicBucketName;
     }
 
     @Getter
-    public enum OSSClientObject {
+    public enum S3ClientObject {
         PRIVATE_CLIENT(BucketName.PRIVATE_BUCKET),
         PUBLIC_CLIENT(BucketName.PUBLIC_BUCKET);
 
-        private OSSClient instance;
+        private AmazonS3 instance;
         private String bucketName;
 
-        OSSClientObject(BucketName bucketName) {
-            this.instance = new OSSClient(ENDPOINT, ACCESS_KEY_ID, ACCESS_KEY_SECRET);
+        S3ClientObject(BucketName bucketName) {
+            AWSCredentials credentials = new BasicAWSCredentials(ACCESS_KEY_ID, ACCESS_KEY_SECRET);
+
+            this.instance = AmazonS3ClientBuilder.standard()
+                    .withCredentials(new AWSStaticCredentialsProvider(credentials))
+                    .withEndpointConfiguration(
+                            new AwsClientBuilder.EndpointConfiguration(
+                                    INTERNAL_ENDPOINT,""))
+                    .build();
             this.bucketName = bucketName.bucketName;
         }
 
@@ -67,4 +84,5 @@ public class OSSConst {
             }
         }
     }
+
 }
