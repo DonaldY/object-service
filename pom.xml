@@ -31,7 +31,7 @@
 		<guava.version>23.6-jre</guava.version>
 		<mybatis.spring.boot>1.2.0</mybatis.spring.boot>
 		<lombok.version>1.16.20</lombok.version>
-		<mybatis.version>3.4.5</mybatis.version>
+		<mybatis.version>3.5.6</mybatis.version>
 		<mysql.connector.version>6.0.6</mysql.connector.version>
 		<protobuf.version>3.5.1</protobuf.version>
 		<grpc.version>1.11.0</grpc.version>
