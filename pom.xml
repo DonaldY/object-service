@@ -32,7 +32,7 @@
 		<mybatis.spring.boot>1.2.0</mybatis.spring.boot>
 		<lombok.version>1.16.20</lombok.version>
 		<mybatis.version>3.4.5</mybatis.version>
-		<mysql.connector.version>6.0.6</mysql.connector.version>
+		<mysql.connector.version>8.0.28</mysql.connector.version>
 		<protobuf.version>3.5.1</protobuf.version>
 		<grpc.version>1.11.0</grpc.version>
 	</properties>
@@ -141,7 +141,7 @@
 					<dependency>
 						<groupId>mysql</groupId>
 						<artifactId>mysql-connector-java</artifactId>
-						<version>6.0.6</version>
+						<version>8.0.28</version>
 					</dependency>
 				</dependencies>
 			</plugin>
